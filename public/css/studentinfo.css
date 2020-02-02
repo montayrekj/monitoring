@@ -1,0 +1,6 @@
+
+
+#schedule > tbody > tr > td > a{
+    width: 100%;
+    display: inline-block;
+}
