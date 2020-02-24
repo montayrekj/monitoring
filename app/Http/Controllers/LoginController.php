@@ -42,8 +42,10 @@ class LoginController extends Controller
             Auth::login($user);
             if($user->accountType == "1") {
                 return redirect("/student/".$user->id);
-            } else {
+            } else if($user->accountType == "0"){
                 return redirect("/teacher/".$user->id);
+            } else {
+                return redirect("/admin");
             }
         } else {
             return redirect('/login')->with('error','Invalid username or password');

@@ -41,7 +41,7 @@
             <a class="navbar-brand" href="#">Class Attendance Monitoring</a>
         </nav>
                 
-        <div class="container" style="background:#F5FCFF; height: 100%; padding: 0px;">
+        <div class="container-fluid" style="background:#F5FCFF; height: 100%; padding: 0px;">
             <div class="sidebar" style="width: 20%; height: 100%; background-color: #192841; float:left; color: white; padding: 10px 20px;">
                 <ul style="padding: 0px; list-style-type: none;" class="sample">
                     <a href="/teacher/{{ $id }}">

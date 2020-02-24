@@ -25,6 +25,7 @@ class StudentController extends Controller
 
         if($user->accountType == "1") {
             $student = DB::table('students')->where('userId',$id)->first();
+            
             $student->track = DB::table('tracks')->where('trackId', $student->trackId)->first()->name;
 
             $section = DB::table('sections')->where('sectionId', $student->sectionId)->first();
@@ -38,12 +39,13 @@ class StudentController extends Controller
             $timeframes = [];
 
             for($counter = 0; $counter < $schedules->count(); $counter++) {
-                $str = $schedules[$counter]->timeFrom.' - '.$schedules[$counter]->timeTo;
+                $str = $schedules[$counter]->timeframe;
                 if(in_array($str ,$timeframes) != true) {
                     array_push($timeframes,$str);
                 }
             }
         }
+        
         return view('studentinfo', ['student'=>$student,'schedules'=>$schedules, 'timeframes'=>$timeframes, 'id'=>$id]);
     }
 
@@ -105,8 +107,17 @@ class StudentController extends Controller
         $student->trackId = $request->section;
         $student->grade = $request->grade;
         $student->sectionId = $request->section;
+
+        if ($request->hasFile('input_img')) {
+            $image = $request->file('input_img');
+            $name = $user->id.'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/images');
+            $image->move($destinationPath, $name);
+            $student->picturePath = '/images/'.$name;
+        }
+
         $student->save();
 
-        return redirect('student/register')->with('success','Successfully registered!');
+        return redirect('student/register')->with('success','Successfully registered! Your id number is '.$student->id.'!');
     }
 }

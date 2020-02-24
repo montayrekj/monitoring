@@ -22,8 +22,7 @@ class TeacherController extends Controller
             return redirect('/login');
         }
 
-        $teacher = DB::table('teachers')->where('userId', $id)->first();
-        $sections = Section::getSectionsByTeacher($teacher->id);
+        $sections = DB::table('sections')->get();
 
         return view('teacherhome', ['sections'=>$sections, 'id'=>$id]);
     }
@@ -68,6 +67,18 @@ class TeacherController extends Controller
         $subjects = Schedule::getAllSubjectsBySection($sectionId);
 
         return json_encode($subjects);
+    }
+
+    public function getSubjectDay(Request $request, $id) {
+        // if(Auth::user()->id != $id) {
+        //     echo 'Invalid user';
+        //     Auth::logout();
+        //     return redirect('/login');
+        // }
+
+        $subjectDay = DB::table('schedules')->where('scheduleId',$request->scheduleId)->first()->day;
+
+        return json_encode($subjectDay);
     }
 
     public function getAttendance(Request $request, $id) {

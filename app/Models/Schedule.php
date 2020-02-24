@@ -54,11 +54,47 @@ class Schedule extends Model
         for($counter = 0; $counter < $schedules->count(); $counter++) {
             $subject = new \stdClass();
             $subject->id = $schedules[$counter]->scheduleId;
-            $subject->name = DB::table('subjects')->where('subjectId', $schedules[$counter]->subjectId)->first()->name;
+
+            $schedules[$counter]->timeFrom = strftime('%I:%M %p', strtotime($schedules[$counter]->timeFrom));
+            $schedules[$counter]->timeTo = strftime('%I:%M %p', strtotime($schedules[$counter]->timeTo));
+            $schedules[$counter]->timeframe = $schedules[$counter]->timeFrom.' - '.$schedules[$counter]->timeTo;
+            $subjectObj = DB::table('subjects')->where('subjectId', $schedules[$counter]->subjectId)->first();
+            $subject->name = $subjectObj->name.' - '.Schedule::getDayOfWeek($schedules[$counter]->day).' ('.$schedules[$counter]->timeframe.')';
+
             array_push($subjects, $subject);
         }
 
         return $subjects;
+    }
+
+    public static function getAllSchedule() {
+        $schedules = DB::table('schedules')->orderBy('subjectId','asc')->get();
+
+        for($counter = 0; $counter < $schedules->count(); $counter++) {
+            $schedules[$counter]->timeFrom = strftime('%I:%M %p', strtotime($schedules[$counter]->timeFrom));
+            $schedules[$counter]->timeTo = strftime('%I:%M %p', strtotime($schedules[$counter]->timeTo));
+            $schedules[$counter]->timeframe = $schedules[$counter]->timeFrom.' - '.$schedules[$counter]->timeTo;
+            $subject = DB::table('subjects')->where('subjectId', $schedules[$counter]->subjectId)->first();
+            $schedules[$counter]->subject = $subject->name;
+            $teacher = DB::table('teachers')->where('id', $subject->teacherId)->first();
+            $schedules[$counter]->teacher = $teacher->firstName.' '.$teacher->lastName;
+            $schedules[$counter]->section = DB::table('sections')->where('sectionId', $schedules[$counter]->sectionId)->first()->name;
+            
+            switch($schedules[$counter]->day) {
+                case 1: $schedules[$counter]->dayOfTheWeek = 'Monday';
+                break;
+                case 2: $schedules[$counter]->dayOfTheWeek = 'Tuesday';
+                break;
+                case 3: $schedules[$counter]->dayOfTheWeek = 'Wednesday';
+                break;
+                case 4: $schedules[$counter]->dayOfTheWeek = 'Thursday';
+                break;
+                case 5: $schedules[$counter]->dayOfTheWeek = 'Friday';
+                break;
+            }
+        }
+
+        return $schedules;
     }
 
     public static function getScheduleById($scheduleId) {

@@ -12,20 +12,20 @@
         
     </head>
     <body>
-        <div class="card" style="height: 700px; width: 600px; position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
-            <form action="/student/register" method="POST" style="padding: 25px 50px 50px 50px">
+        <div class="card" style="height: 820px; width: 600px; position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);">
+            <form action="/student/register" method="POST" enctype="multipart/form-data" style="padding: 25px 50px 50px 50px">
                 @csrf
                 <div class="form-group" >
                     <label for="firstname">First Name</label>
-                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Enter first name">
+                    <input type="text" required class="form-control" id="firstname" name="firstname" placeholder="Enter first name">
                 </div>
                 <div class="form-group" >
                     <label for="lastname">Last Name</label>
-                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter last name">
+                    <input type="text" required class="form-control" id="lastname" name="lastname" placeholder="Enter last name">
                 </div>
                 <div class="form-group">
                     <label>Grade</label>
-                    <select class="form-control" name="grade">
+                    <select class="form-control" required name="grade">
                         <option disabled selected>-- Select Your Grade --</option>
                         <option value="11">11</option>
                         <option value="12">12</option>
@@ -33,7 +33,7 @@
                 </div>
                 <div class="form-group">
                     <label>Section</label>
-                    <select class="form-control" name="section">
+                    <select class="form-control" required name="section">
                         <option disabled selected>-- Select Your Section --</option>
                         @for($counter = 0; $counter < $sections->count(); $counter++)
                             <option value="{{ $sections[$counter]->sectionId }}">{{ $sections[$counter]->name }}</option>
@@ -42,7 +42,7 @@
                 </div>
                 <div class="form-group">
                     <label>Track</label>
-                    <select class="form-control" name="track">
+                    <select class="form-control" required name="track">
                         <option disabled selected>-- Select Your Track --</option>
                         @for($counter = 0; $counter < $tracks->count(); $counter++)
                             <option value="{{ $tracks[$counter]->trackId }}">{{ $tracks[$counter]->name }}</option>
@@ -51,11 +51,16 @@
                 </div>
                 <div class="form-group" >
                     <label for="username">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
+                    <input type="text" required class="form-control" id="username" name="username" placeholder="Enter username">
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                    <input type="password" required class="form-control" id="password" name="password" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <label for="imageInput">Profile Picture</label><br>
+                    <input data-preview="#preview" name="input_img" type="file" id="imageInput">
+                    <img class="col-sm-6" id="preview"  src="">
                 </div>
                 @if ( session('error'))
                     <div class="alert alert-danger">

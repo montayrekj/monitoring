@@ -48,7 +48,7 @@
             <a class="navbar-brand" href="#">Class Attendance Monitoring</a>
         </nav>
                 
-        <div class="container" style="background:#F5FCFF; height: 100%; padding: 0px;">
+        <div class="container-fluid-fluid" style="background:#F5FCFF; height: 100%; padding: 0px;">
             <div class="sidebar" style="width: 20%; height: 100%; background-color: #192841; float:left; color: white; padding: 10px 20px;">
                 <ul style="padding: 0px; list-style-type: none;" class="sample">
                     <a href="/student/{{ $id }}" class="active">
@@ -70,7 +70,7 @@
             </div>
             <div class="content" style="width: 80%; height: 100%; float: right; padding: 20px; display: flex; flex-direction: column; overflow: scroll">
                 <div class="student-info" style="height: 150px">
-                    <img width="150" height="150" style="float: left"src="https://i2.wp.com/peoplaid.com/wp-content/uploads/2019/03/James-Reid.jpg?w=469&ssl=1 469w, https://i2.wp.com/peoplaid.com/wp-content/uploads/2019/03/James-Reid.jpg?resize=150%2C150&ssl=1 150w, https://i2.wp.com/peoplaid.com/wp-content/uploads/2019/03/James-Reid.jpg?resize=298%2C300&ssl=1 298w, https://i2.wp.com/peoplaid.com/wp-content/uploads/2019/03/James-Reid.jpg?resize=60%2C60&ssl=1 60w"/>
+                    <img width="150" height="150" style="float: left" src="{{$student->picturePath}}"> 
                     <div style="float: left; height: 150px; display: flex; flex-direction: column; justify-content: center; padding: 20px;">
                         <div>Name: <b>{{ $student->firstName }} {{ $student->lastName }}</b></div>
                         <div>Grade & Section: <b>{{ $student->grade }} - {{ $student->section }}</b></div>
@@ -109,11 +109,11 @@
 
                                             @for($counter2 = 0; $counter2 < count($schedules); $counter2++)
                                                 @if($schedules[$counter2]->timeframe == $timeframes[$counter] && $day == $schedules[$counter2]->day)
-                                                @php
-                                                    $url = 'attendance/'.Auth::user()->id.'?';
-                                                    $url .= 'scheduleId='.$schedules[$counter2]->scheduleId;
-                                                @endphp
-                                                <td><a href="/<?php echo $url ?>"><label class="subject">{{ $schedules[$counter2]->subject }}</label></a></td>
+                                                    @php
+                                                        $url = 'attendance/'.Auth::user()->id.'?';
+                                                        $url .= 'scheduleId='.$schedules[$counter2]->scheduleId;
+                                                    @endphp
+                                                    <td><a href="/<?php echo $url ?>"><label class="subject">{{ $schedules[$counter2]->subject }}</label></a></td>
                                                     @php
                                                         $flag = true;
                                                     @endphp
@@ -240,7 +240,7 @@
         <link href="{{ URL::asset('css/studentinfo.css') }}" rel="stylesheet"> 
     </head>
     <body>
-    <div class="container">
+    <div class="container-fluid">
             
         </div>
     </body>

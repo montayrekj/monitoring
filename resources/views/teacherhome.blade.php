@@ -7,8 +7,10 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link href="{{  URL::asset('css/all.css') }}" rel="stylesheet">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-        <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
-        <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+        <!-- <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+        <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" /> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
         <style>
             .fas {
                 padding: 10px;
@@ -41,7 +43,7 @@
             <a class="navbar-brand" href="#">Class Attendance Monitoring</a>
         </nav>
                 
-        <div class="container" style="background:#F5FCFF; height: 100%; padding: 0px;">
+        <div class="container-fluid" style="background:#F5FCFF; height: 100%; padding: 0px;">
             <div class="sidebar" style="width: 20%; height: 100%; background-color: #192841; float:left; color: white; padding: 10px 20px;">
                 <ul style="padding: 0px; list-style-type: none;" class="sample">
                     <a href="/teacher/{{ $id }}" class="active">
@@ -105,9 +107,9 @@
 
         <!-- SCRIPT BELOW -->
         <script>
-            $('#datepicker').datepicker({
-                uiLibrary: 'bootstrap4',
-            });
+            // $('#datepicker').datepicker({
+            //     uiLibrary: 'bootstrap4',
+            // });
             $(document).ready(function() {
                 $('select[name="sections"]').on('change', function() {
                     var sectionId = $(this).val();
@@ -145,10 +147,34 @@
                         $('select[name="subjects"]').append('<option disabled selected>-- Select Subject --</option>');
                     }
                 });
-
-
+                
                 $('select[name="subjects"]').on('change', function() {
                     $('input[id="datepicker"]').removeAttr('disabled');
+                    var scheduleId = $('select[name="subjects"]').val();
+                    var apiurl = '/teacher/{{ $id }}/getSubjectDay?'+ 'scheduleId=' + scheduleId;
+                    $.ajax({
+                        url: apiurl,
+                        type: "GET",
+                        dataType: "json",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success:function(data) {
+                            var disable = []
+                            for(var counter = 0; counter <= 6; counter++) {
+                                if(counter != data) {
+                                    disable.push(counter);
+                                }
+                            }
+                            $("#datepicker").datepicker('destroy');
+                            $('#datepicker').datepicker({
+                                daysOfWeekDisabled: disable
+                            });
+                        }, 
+                        error: function(request, status, error) {
+                            console.log(request.responseText);
+                        }
+                    })
                 });
 
                 $('button[id="getAttendance"]').on('click', function() {
@@ -163,7 +189,6 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success:function(data) {
-                            console.log(data)
                             if(data.length == 0) {
                                 $("#attendanceTable > tbody").html("");
                             } else {

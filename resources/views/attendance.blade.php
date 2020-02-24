@@ -41,7 +41,7 @@
             <a class="navbar-brand" href="#">Class Attendance Monitoring</a>
         </nav>
                 
-        <div class="container" style="background:#F5FCFF; height: 100%; padding: 0px;">
+        <div class="container-fluid" style="background:#F5FCFF; height: 100%; padding: 0px;">
             <div class="sidebar" style="width: 20%; height: 100%; background-color: #192841; float:left; color: white; padding: 10px 20px;">
                 <ul style="padding: 0px; list-style-type: none;" class="sample">
                     <a href="/student/{{ $id }}" class="active">
@@ -114,7 +114,7 @@
         <link href="{{ URL::asset('css/studentinfo.css') }}" rel="stylesheet"> 
     </head>
     <body>
-    <div class="container">
+    <div class="container-fluid">
             
         </div>
     </body>
@@ -126,7 +126,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     </head>
     <body>
-        <div class="container">
+        <div class="container-fluid">
             
         </div>
     </body>

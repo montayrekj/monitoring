@@ -34,16 +34,19 @@ class AttendanceController extends Controller
     public function punchTime($id) {
         date_default_timezone_set("Asia/Manila");
         $timeN = time(); 
-        $student = $student = DB::table('students')->where('userId',$id)->first();
+        $student = $student = DB::table('students')->where('id',$id)->first();
         $schedules = DB::table('schedules')->where('sectionId', $student->sectionId)->orderBy('timeFrom','asc')->orderBy('day','asc')->get();
+        $scheduleCount = -1;
         $scheduleId = -1;
         
         for($counter = 0; $counter < $schedules->count(); $counter++) {
-            $timeF = strtotime($schedules[$counter]->timeFrom);
-            $timeT = strtotime($schedules[$counter]->timeTo);
+            $timeF = strtotime($schedules[$counter]->timeFrom) - 900;
+            $timeT = strtotime($schedules[$counter]->timeTo) + 900;
             
             if(($timeN >= $timeF && $timeN <= $timeT) && (date('w') == $schedules[$counter]->day)) {
+                $schedules[$counter]->subject = DB::table('subjects')->where('subjectId', $schedules[$counter]->subjectId)->first()->name;
                 $scheduleId = $schedules[$counter]->scheduleId;
+                $scheduleCount = $counter;
                 break;
             }
         }
@@ -57,23 +60,39 @@ class AttendanceController extends Controller
                 $attendance->scheduleId = $scheduleId;
                 $attendance->date = date('Y-m-d', $timeN);
                 $attendance->timeIn = date("H:i:s", $timeN);
+
+                $timeLate = strtotime($schedules[$counter]->timeFrom) + 960;
+                if($timeN >= $timeLate) {
+                    $attendance->timeInRemarks = "LATE";
+                }
+
                 $attendance->save();
-                //Calculate Remarks Below
+
+                return 'Successfully timed-in for '. $schedules[$scheduleCount]->subject .'!';
             } else {
                 if($attendance->timeOut == null) {
                     $attendance = Attendance::checkAttendanceExistLimitOne($student->id, $scheduleId, date('Y-m-d', $timeN));
                     $attendance->update([
                         'timeOut' => date("H:i:s", $timeN)
                     ]);
+                    return 'Successfully timed-out for '. $schedules[$scheduleCount]->subject .'!';
                 } else if($attendance->timeIn == null) {
                     $attendance = Attendance::checkAttendanceExistLimitOne($student->id, $scheduleId, date('Y-m-d', $timeN));
+                    $timeLate = strtotime($schedules[$counter]->timeFrom) + 960;
+                    $remarks = "";
+                    if($timeN >= $timeLate) {
+                        $remarks = "LATE";
+                    }
+                
                     $attendance->update([
+                        'remarks' => $remarks,
                         'timeIn' => date("H:i:s", $timeN)
                     ]);
+                    return 'Successfully timed-in for '. $schedules[$scheduleCount]->subject .'!';
+                } else {
+                    return 'Already timed-in and timed-out for '. $schedules[$scheduleCount]->subject .'!';
                 }
-                //Calculate Remarks Below
             }
-            return 'Successfully punched!';
         } else {
             return "No schedule for current day and time.";
         }

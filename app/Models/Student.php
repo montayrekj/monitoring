@@ -18,9 +18,7 @@ class Student extends Model
     /**
      * @var array
      */
-    protected $fillable = ['userId', 'firstName', 'lastName', 'grade', 'sectionId', 'trackId'];
-
-    public $timestamps = false;
+    protected $fillable = ['userId', 'firstName', 'lastName', 'grade', 'sectionId', 'trackId','picturePath'];
 
     public $section = '';
     public $track = '';
